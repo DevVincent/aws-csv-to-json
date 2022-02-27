@@ -59,8 +59,6 @@ workflows:
       - deployProduction:
           context:
             - npm-read-only
-          requires:
-            - test
           filters:
             branches:
               only: production
