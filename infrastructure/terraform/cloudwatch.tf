@@ -1,5 +1,5 @@
 resource "aws_cloudwatch_log_group" "lambda_log_group" {
-  name = "aws/lambda/${aws_lambda_function.lambda_csv_to_json.function_name}"
+  name = "lambda/${aws_lambda_function.lambda_csv_to_json.function_name}"
 
   tags = local.common_tags
 }
@@ -16,7 +16,7 @@ resource "aws_cloudwatch_log_metric_filter" "lambda_metric_filter" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "lambda_alarm" {
-  alarm_name = "error-we-care-about"
+  alarm_name = "${aws_lambda_function.lambda_csv_to_json.function_name}-alarm"
   metric_name         = aws_cloudwatch_log_metric_filter.lambda_metric_filter.name
   threshold           = "0"
   statistic           = "Sum"

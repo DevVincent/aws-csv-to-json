@@ -7,3 +7,4 @@ send them as json files into an s3 bucket thanks to the following services:
 - Lambda
 - KMS
 - IAM
+- Cloudwatch Alarms
