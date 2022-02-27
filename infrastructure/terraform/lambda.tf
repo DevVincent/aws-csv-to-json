@@ -19,7 +19,10 @@ resource "aws_iam_role" "iam_for_lambda" {
           "logs:DescribeLogStreams",
           "logs:PutRetentionPolicy",
           "logs:CreateLogGroup"
-      ]
+      ],
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      }
     }
   ]
 }
