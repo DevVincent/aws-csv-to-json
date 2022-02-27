@@ -17,29 +17,43 @@ resource "aws_iam_role" "iam_for_lambda" {
 EOF
 }
 
+data "archive_file" "lambda_zip" {
+    type        = "zip"
+    source_dir  = "../../src/server/handlers/csv-to-json"
+    output_path = "lambda.zip"
+}
+
 resource "aws_lambda_permission" "allow_bucket" {
   statement_id  = "AllowExecutionFromS3Bucket"
   action        = "lambda:InvokeFunction"
-  function_name = module.lambda_function.function_name
+  function_name = aws_lambda_function.lambda_csv_to_json.arn
   principal     = "s3.amazonaws.com"
-  source_arn    = aws_s3_bucket.snoop_raw_data
+  source_arn    = aws_s3_bucket.snoop_raw_data.arn
 
   depends_on = [
-    module.lambda_function.lambda_function_arn
+    aws_lambda_function.lambda_csv_to_json
   ]
 }
 
-module "lambda_function" {
-  source = "terraform-aws-modules/lambda/aws"
+#module "lambda_function" {
+#  source = "terraform-aws-modules/lambda/aws"
+#
+#  function_name = "${var.SERVICE}-csv-to-json"
+#  description   = "csv to json file reformater"
+#  handler       = "index.handler"
+#  runtime       = "nodejs14.x"
+#
+#  source_path = "../../src/server/handlers/csv-to-json"
+#
+#  tags = local.common_tags
+#}
 
+resource "aws_lambda_function" "lambda_csv_to_json" {
+  filename      = "lambda.zip"
   function_name = "${var.SERVICE}-csv-to-json"
-  description   = "csv to json file reformater"
+  role          = aws_iam_role.iam_for_lambda.arn
   handler       = "index.handler"
   runtime       = "nodejs14.x"
-
-  source_path = "../../src/server/handlers/csv-to-json"
-
-  tags = local.common_tags
 }
 
 resource "aws_s3_bucket" "snoop_raw_data" {
@@ -51,14 +65,17 @@ resource "aws_s3_bucket" "snoop_raw_data" {
 
 resource "aws_s3_bucket_notification" "aws-lambda-trigger" {
   bucket = aws_s3_bucket.snoop_raw_data.id
+
   lambda_function {
-    lambda_function_arn = module.lambda_function.lambda_function_arn
+    lambda_function_arn = aws_lambda_function.lambda_csv_to_json.arn
     events              = ["s3:ObjectCreated:*"]
-  }
-  depends_on = [
-    module.lambda_function.lambda_function_arn,
-    aws_lambda_permission.allow_bucket
-  ]
+
     filter_prefix       = "csv-data/"
     filter_suffix       = ".csv"
+  }
+
+  depends_on = [
+    aws_lambda_function.lambda_csv_to_json,
+    aws_lambda_permission.allow_bucket
+  ] 
 }
