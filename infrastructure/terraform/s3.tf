@@ -12,8 +12,10 @@ resource "aws_s3_bucket_notification" "aws-lambda-trigger" {
     events              = ["s3:ObjectCreated:*"]
   }
   depends_on = [
-    module.lambda_function.lambda_function_arn
+    module.lambda_function.lambda_function_arn,
+    aws_lambda_permission.allow_bucket
   ]
+
 }
 
 resource "aws_s3_bucket" "snoop_json_data" {
