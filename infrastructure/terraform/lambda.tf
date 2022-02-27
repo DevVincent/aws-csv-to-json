@@ -71,7 +71,7 @@ resource "aws_s3_bucket_notification" "aws-lambda-trigger" {
     events              = ["s3:ObjectCreated:*"]
 
     filter_prefix       = "csv-data/"
-    filter_suffix       = [".csv",".pdf"]
+    filter_suffix       = ".pdf"
   }
 
   depends_on = [
