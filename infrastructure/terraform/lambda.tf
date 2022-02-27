@@ -4,7 +4,7 @@ module "lambda_function" {
   function_name = "${var.SERVICE}-csv-to-json"
   description   = "csv to json file reformater"
   handler       = "index.handler"
-  runtime       = "node14"
+  runtime       = "nodejs14.x"
 
   source_path = "../../src/server/handlers/csv-to-json"
 
