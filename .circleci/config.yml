@@ -14,10 +14,6 @@ jobs:
           command: |
             # Terraform
             wget "https://releases.hashicorp.com/terraform/$(curl -s https://checkpoint-api.hashicorp.com/v1/check/terraform | jq -r -M '.current_version')/terraform_$(curl -s https://checkpoint-api.hashicorp.com/v1/check/terraform | jq -r -M '.current_version')_linux_$(dpkg --print-architecture).zip" -O /tmp/terraform.zip && sudo unzip /tmp/terraform.zip -d /usr/local/bin && rm -f /tmp/terraform.zip
-      - run:
-          name: NPM install
-          command: |
-            npm ci
 
   deployProduction:
     machine:
@@ -33,10 +29,6 @@ jobs:
           command: |
             # Terraform
             wget "https://releases.hashicorp.com/terraform/$(curl -s https://checkpoint-api.hashicorp.com/v1/check/terraform | jq -r -M '.current_version')/terraform_$(curl -s https://checkpoint-api.hashicorp.com/v1/check/terraform | jq -r -M '.current_version')_linux_$(dpkg --print-architecture).zip" -O /tmp/terraform.zip && sudo unzip /tmp/terraform.zip -d /usr/local/bin && rm -f /tmp/terraform.zip
-      - run:
-          name: NPM install
-          command: |
-            npm ci
       - run:
           name: Terraform Init
           command: bash setup-scripts/terraform-init.sh
