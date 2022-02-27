@@ -37,7 +37,7 @@ data aws_iam_policy_document lambda_role_csv_policy {
       "s3:ListBucketMultipartUploads"
     ]
 
-    resources = [aws_s3_bucket.snoop_json_data, aws_s3_bucket.snoop_raw_data]
+    resources = [aws_s3_bucket.snoop_json_data.arn, aws_s3_bucket.snoop_raw_data.arn]
   }
 }
 
