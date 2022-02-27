@@ -1,13 +1,30 @@
 resource "aws_s3_bucket" "snoop_json_data" {
   bucket_prefix = "${var.SERVICE}-json-${var.REGION}-snoop-app"
+  
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        kms_master_key_id = aws_kms_key.kms_s3_key.key_id
+        sse_algorithm     = "aws:kms"
+      }
+    }
+  }
 
   tags          = local.common_tags
 }
 resource "aws_s3_bucket" "snoop_raw_data" {
   bucket_prefix = "${var.SERVICE}-raw-${var.REGION}-snoop-app"
+  
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        kms_master_key_id = aws_kms_key.kms_s3_key.key_id
+        sse_algorithm     = "aws:kms"
+      }
+    }
+  }
 
   tags          = local.common_tags
-
 }
 
 resource "aws_s3_bucket_notification" "aws-lambda-trigger" {

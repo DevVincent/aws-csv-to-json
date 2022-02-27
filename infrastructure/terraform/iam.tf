@@ -21,7 +21,7 @@ data aws_iam_policy_document lambda_role_csv_policy {
       "kms:GenerateDataKey"
     ]
 
-    resources = ["*"]
+    resources = [aws_kms_key.kms_s3_key.arn]
   }
 
   statement {
