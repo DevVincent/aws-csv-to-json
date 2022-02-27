@@ -11,22 +11,64 @@ resource "aws_iam_role" "iam_for_lambda" {
         "Service": "lambda.amazonaws.com"
       },
       "Effect": "Allow"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-          "logs:CreateLogStream",
-          "logs:DescribeLogStreams",
-          "logs:PutRetentionPolicy",
-          "logs:CreateLogGroup"
-      ],
-      "Principal": {
-        "Service": "lambda.amazonaws.com"
-      }
     }
   ]
 }
 EOF
+}
+
+data "aws_iam_policy_document" "lambda_role_policy" {
+
+  statement {
+    sid = "CloudWatch"
+
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
+    ]
+
+    resources = ["*"]
+  }
+
+  statement {
+    sid = "KMSOperations"
+
+    actions = [
+      "kms:Encrypt",
+      "kms:Decrypt",
+      "kms:GenerateDataKey"
+    ]
+
+    resources = ["*"]
+  }
+
+  statement {
+    sid = "S3Get"
+
+    actions = [
+      "s3:GetObject",
+      "s3:GetObjectAcl"
+    ]
+
+    resources = ["*"]
+  }
+
+  statement {
+    sid = "S3PutToExternalBucket"
+
+    actions = [
+      "s3:PutObject",
+      "s3:PutObjectAcl",
+      "s3:AbortMultipartUpload",
+      "s3:GetBucketLocation",
+      "s3:GetObject",
+      "s3:ListBucket",
+      "s3:ListBucketMultipartUploads"
+    ]
+
+    resources = ["*"]
+  }
 }
 
 data "archive_file" "lambda_zip" {
@@ -50,7 +92,10 @@ resource "aws_lambda_permission" "allow_bucket" {
 resource "aws_lambda_function" "lambda_csv_to_json" {
   filename      = "lambda.zip"
   function_name = "${var.SERVICE}-csv-to-json"
-  role          = aws_iam_role.iam_for_lambda.arn
+  role          = [
+    aws_iam_role.iam_for_lambda.arn, 
+    data.aws_iam_policy_document.lambda_role_policy
+  ]
   handler       = "index.lambda-handler"
   runtime       = "python3.9"
 }
