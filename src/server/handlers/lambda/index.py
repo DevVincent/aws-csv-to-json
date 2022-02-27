@@ -6,7 +6,7 @@ import datetime as dt
 
 s3 = boto3.client('s3')
 
-def lambda_handler(event, context):
+def handler(event, context):
     
     datestamp = dt.datetime.now().strftime("%Y/%m/%d")
     timestamp = dt.datetime.now().strftime("%s")

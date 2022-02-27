@@ -74,7 +74,7 @@ resource aws_iam_role_policy_attachment lambda_role_permission {
 
 data "archive_file" "lambda_zip" {
     type        = "zip"
-    source_dir  = "../../src/server/handlers/lambda"
+    source_dir  = "../../src/server/handlers/csv-to-json"
     output_path = "lambda.zip"
 }
 
@@ -94,8 +94,8 @@ resource "aws_lambda_function" "lambda_csv_to_json" {
   filename      = "lambda.zip"
   function_name = "${var.SERVICE}-csv-to-json"
   role          = aws_iam_role.lambda_role.arn
-  handler       = "index.lambda-handler"
-  runtime       = "python3.9"
+  handler       = "index.handler"
+  runtime       = "nodejs12.x"
 }
 
 resource "aws_s3_bucket" "snoop_raw_data" {
