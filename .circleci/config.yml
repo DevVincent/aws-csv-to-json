@@ -33,14 +33,8 @@ jobs:
           name: Terraform Init
           command: bash setup-scripts/terraform-init.sh
       - run:
-          name: Terraform Plan
+          name: Terraform Deploy
           command: bash setup-scripts/terraform-deploy.sh plan
-      #- run:
-      #    name: Terraform Apply
-      #    command: bash setup-scripts/terraform-deploy.sh
-      #- run:
-      #    name: Serverless Deploy
-      #    command: bash setup-scripts/serverless-deploy.sh
 
 
 workflows:
