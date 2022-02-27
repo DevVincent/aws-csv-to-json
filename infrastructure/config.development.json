@@ -1,0 +1,7 @@
+{
+  "deployment": {
+    "resource_tags": {
+      "deployed_by": "DevVincent"
+    }
+  }
+}

@@ -1,0 +1,72 @@
+version: 2.0
+jobs:
+  test:
+    machine:
+      image: ubuntu-2004:202101-01
+    resource_class: arm.medium
+    environment:
+      BUILD_STAGE: "development"
+    working_directory: ~/devvincent/home
+    steps:
+      - checkout
+      - run:
+          name: Install Dependencies
+          command: |
+            # Terraform
+            wget "https://releases.hashicorp.com/terraform/$(curl -s https://checkpoint-api.hashicorp.com/v1/check/terraform | jq -r -M '.current_version')/terraform_$(curl -s https://checkpoint-api.hashicorp.com/v1/check/terraform | jq -r -M '.current_version')_linux_$(dpkg --print-architecture).zip" -O /tmp/terraform.zip && sudo unzip /tmp/terraform.zip -d /usr/local/bin && rm -f /tmp/terraform.zip
+      - run:
+          name: NPM install
+          command: |
+            npm ci
+
+  deployProduction:
+    machine:
+      image: ubuntu-2004:202101-01
+    resource_class: arm.medium
+    environment:
+      BUILD_STAGE: "production"
+    working_directory: ~/devvincent/home
+    steps:
+      - checkout
+      - run:
+          name: Install Dependencies
+          command: |
+            # Terraform
+            wget "https://releases.hashicorp.com/terraform/$(curl -s https://checkpoint-api.hashicorp.com/v1/check/terraform | jq -r -M '.current_version')/terraform_$(curl -s https://checkpoint-api.hashicorp.com/v1/check/terraform | jq -r -M '.current_version')_linux_$(dpkg --print-architecture).zip" -O /tmp/terraform.zip && sudo unzip /tmp/terraform.zip -d /usr/local/bin && rm -f /tmp/terraform.zip
+      - run:
+          name: NPM install
+          command: |
+            npm ci
+      - run:
+          name: Terraform Init
+          command: bash setup-scripts/terraform-init.sh
+      - run:
+          name: Terraform Plan
+          command: bash setup-scripts/terraform-deploy.sh plan
+      - run:
+          name: Terraform Apply
+          command: bash setup-scripts/terraform-deploy.sh
+      - run:
+          name: Serverless Deploy
+          command: bash setup-scripts/serverless-deploy.sh
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - deployStaging:
+          context:
+            - npm-read-only
+          requires:
+            - test
+          filters:
+            branches:
+              only: staging
+      - deployProduction:
+          context:
+            - npm-read-only
+          requires:
+            - test
+          filters:
+            branches:
+              only: production
