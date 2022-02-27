@@ -21,7 +21,7 @@ data aws_iam_policy_document lambda_role_csv_policy {
       "kms:GenerateDataKey"
     ]
 
-    resources = [aws_kms_key.kms_s3_key.arn]
+    resources = ["${aws_kms_key.kms_s3_key.arn}/*", aws_kms_key.kms_s3_key.arn]
   }
 
   statement {
@@ -31,13 +31,17 @@ data aws_iam_policy_document lambda_role_csv_policy {
       "s3:PutObject",
       "s3:PutObjectAcl",
       "s3:AbortMultipartUpload",
-      "s3:GetBucketLocation",
       "s3:GetObject",
       "s3:ListBucket",
       "s3:ListBucketMultipartUploads"
     ]
 
-    resources = [aws_s3_bucket.snoop_json_data.arn, aws_s3_bucket.snoop_raw_data.arn]
+    resources = [
+                  "${aws_s3_bucket.snoop_json_data.arn}/*", 
+                  "${aws_s3_bucket.snoop_raw_data.arn}/*",
+                  aws_s3_bucket.snoop_raw_data.arn,
+                  aws_s3_bucket.snoop_json_data.arn
+                ]
   }
 }
 
