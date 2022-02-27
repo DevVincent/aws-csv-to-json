@@ -19,7 +19,7 @@ EOF
 
 data "archive_file" "lambda_zip" {
     type        = "zip"
-    source_dir  = "../../src/server/handlers/csv-to-json"
+    source_dir  = "../../src/server/handlers/lambda"
     output_path = "lambda.zip"
 }
 
@@ -34,19 +34,6 @@ resource "aws_lambda_permission" "allow_bucket" {
     aws_lambda_function.lambda_csv_to_json
   ]
 }
-
-#module "lambda_function" {
-#  source = "terraform-aws-modules/lambda/aws"
-#
-#  function_name = "${var.SERVICE}-csv-to-json"
-#  description   = "csv to json file reformater"
-#  handler       = "index.handler"
-#  runtime       = "nodejs14.x"
-#
-#  source_path = "../../src/server/handlers/csv-to-json"
-#
-#  tags = local.common_tags
-#}
 
 resource "aws_lambda_function" "lambda_csv_to_json" {
   filename      = "lambda.zip"
