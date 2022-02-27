@@ -17,4 +17,8 @@ resource "aws_lambda_permission" "allow_bucket" {
   function_name = module.lambda_function.function_name
   principal     = "s3.amazonaws.com"
   source_arn    = aws_s3_bucket.snoop_raw_data
+
+  depends_on = [
+    module.lambda_function
+  ]
 }
