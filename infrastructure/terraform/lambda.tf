@@ -1,23 +1,36 @@
-resource "aws_iam_role" "iam_for_lambda" {
-  name = "iam_for_lambda"
-
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "lambda.amazonaws.com"
-      },
-      "Effect": "Allow"
-    }
-  ]
-}
-EOF
-}
+#resource "aws_iam_role" "iam_for_lambda" {
+#  name = "iam_for_lambda"
+#
+#  assume_role_policy = <<EOF
+#{
+#  "Version": "2012-10-17",
+#  "Statement": [
+#    {
+#      "Action": "sts:AssumeRole",
+#      "Principal": {
+#        "Service": "lambda.amazonaws.com"
+#      },
+#      "Effect": "Allow"
+#    }
+#  ]
+#}
+#EOF
+#}
 
 data "aws_iam_policy_document" "lambda_role_policy" {
+  
+  statement {
+    sid = "AllowLambda"
+
+    actions = [
+      "sts:AssumeRole"
+    ]
+
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+  }
 
   statement {
     sid = "CloudWatch"
@@ -92,10 +105,7 @@ resource "aws_lambda_permission" "allow_bucket" {
 resource "aws_lambda_function" "lambda_csv_to_json" {
   filename      = "lambda.zip"
   function_name = "${var.SERVICE}-csv-to-json"
-  role          = [
-    aws_iam_role.iam_for_lambda.arn, 
-    data.aws_iam_policy_document.lambda_role_policy
-  ]
+  role          = data.aws_iam_policy_document.lambda_role_policy
   handler       = "index.lambda-handler"
   runtime       = "python3.9"
 }
