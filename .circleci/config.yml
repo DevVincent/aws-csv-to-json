@@ -56,14 +56,6 @@ workflows:
   version: 2
   build-and-deploy:
     jobs:
-      - deployStaging:
-          context:
-            - npm-read-only
-          requires:
-            - test
-          filters:
-            branches:
-              only: staging
       - deployProduction:
           context:
             - npm-read-only
