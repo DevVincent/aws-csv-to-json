@@ -1,5 +1,7 @@
 export CWD=$(pwd)
 
+aws get-caller-identity
+
 function doVars {
   source ${CWD}/setup-scripts/variables/${BUILD_STAGE}.sh
 }
