@@ -1,0 +1,1 @@
+{"filename": "builds/1406a0e095e9f20f9616e8ba3ef95ae9004008d21cb1bf6da911eb72384c3e87.zip", "runtime": "nodejs14.x", "artifacts_dir": "builds", "build_plan": [["zip", "../../src/server/handlers/csv-to-json", null]]}
