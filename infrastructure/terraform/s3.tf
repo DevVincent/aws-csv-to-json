@@ -8,7 +8,7 @@ resource "aws_s3_bucket" "snoop_raw_data" {
 resource "aws_s3_bucket_notification" "aws-lambda-trigger" {
   bucket = aws_s3_bucket.snoop_raw_data.id
   lambda_function {
-    lambda_function_arn = module.lambda_function.lambda_function_arn
+    lambda_function_arn = module.lambda_function.arn
     events              = ["s3:ObjectCreated:*"]
   }
 }
