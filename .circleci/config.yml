@@ -33,24 +33,23 @@ jobs:
           command: |
             # Terraform
             wget "https://releases.hashicorp.com/terraform/$(curl -s https://checkpoint-api.hashicorp.com/v1/check/terraform | jq -r -M '.current_version')/terraform_$(curl -s https://checkpoint-api.hashicorp.com/v1/check/terraform | jq -r -M '.current_version')_linux_$(dpkg --print-architecture).zip" -O /tmp/terraform.zip && sudo unzip /tmp/terraform.zip -d /usr/local/bin && rm -f /tmp/terraform.zip
-      #- run:
-      #    name: NPM install
-      #    command: |
-      #      npm ci
-      #- run:
-      #    name: Terraform Init
-      #    command: bash setup-scripts/terraform-init.sh
-      #- run:
-      #    name: Terraform Plan
-      #    command: bash setup-scripts/terraform-deploy.sh plan
+      - run:
+          name: NPM install
+          command: |
+            npm ci
+      - run:
+          name: Terraform Init
+          command: bash setup-scripts/terraform-init.sh
+      - run:
+          name: Terraform Plan
+          command: bash setup-scripts/terraform-deploy.sh plan
       #- run:
       #    name: Terraform Apply
       #    command: bash setup-scripts/terraform-deploy.sh
       #- run:
       #    name: Serverless Deploy
       #    command: bash setup-scripts/serverless-deploy.sh
-      - run:
-        command: aws get-caller-identity
+
 
 workflows:
   version: 2
