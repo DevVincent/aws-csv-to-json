@@ -19,6 +19,6 @@ resource "aws_lambda_permission" "allow_bucket" {
   source_arn    = aws_s3_bucket.snoop_raw_data
 
   depends_on = [
-    module.lambda_function
+    module.lambda_function.lambda_function_arn
   ]
 }
