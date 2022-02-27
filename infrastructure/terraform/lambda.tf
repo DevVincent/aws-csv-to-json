@@ -84,6 +84,11 @@ data "aws_iam_policy_document" "lambda_role_policy" {
   }
 }
 
+resource aws_iam_role lambda_role {
+  name                = "${var.SERVICE}-${var.STAGE}-lambda"
+  assume_role_policy  = data.aws_iam_policy_document.lambda_role_policy.json
+}
+
 data "archive_file" "lambda_zip" {
     type        = "zip"
     source_dir  = "../../src/server/handlers/lambda"
@@ -105,7 +110,7 @@ resource "aws_lambda_permission" "allow_bucket" {
 resource "aws_lambda_function" "lambda_csv_to_json" {
   filename      = "lambda.zip"
   function_name = "${var.SERVICE}-csv-to-json"
-  role          = data.aws_iam_policy_document.lambda_role_policy
+  role          = aws_iam_role.lambda_role.arn
   handler       = "index.lambda-handler"
   runtime       = "python3.9"
 }
