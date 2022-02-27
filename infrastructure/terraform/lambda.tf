@@ -121,3 +121,4 @@ resource "aws_s3_bucket_notification" "aws-lambda-trigger" {
     aws_lambda_permission.allow_bucket
   ] 
 }
+
