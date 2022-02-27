@@ -11,6 +11,9 @@ resource "aws_s3_bucket_notification" "aws-lambda-trigger" {
     lambda_function_arn = module.lambda_function.arn
     events              = ["s3:ObjectCreated:*"]
   }
+  depends_on = [
+    module.lambda_function.arn
+      ]
 }
 
 resource "aws_s3_bucket" "snoop_json_data" {
