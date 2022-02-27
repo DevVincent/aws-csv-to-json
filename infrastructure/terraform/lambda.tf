@@ -59,7 +59,6 @@ data aws_iam_policy_document lambda_trust_relationship_policy {
 resource aws_iam_role lambda_role {
   name                = "${var.SERVICE}-${var.STAGE}-lambda"
   assume_role_policy  = data.aws_iam_policy_document.lambda_trust_relationship_policy.json
-  tags                = var.TAGS
 }
 
 resource aws_iam_policy lambda_policy {
