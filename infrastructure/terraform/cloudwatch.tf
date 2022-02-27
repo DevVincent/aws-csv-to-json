@@ -1,6 +1,6 @@
 resource "aws_cloudwatch_log_metric_filter" "lambda_metric_filter" {
   name           = "Lambda metric filter"
-  log_group_name = "aws/lambda/${aws_lambda_function.lambda_csv_to_json.function_name}"
+  log_group_name = "/aws/lambda/${aws_lambda_function.lambda_csv_to_json.function_name}"
   pattern        = "[ERROR]"
   metric_transformation {
     name      = "LambdaErrorMetric"
