@@ -46,3 +46,5 @@ def lambda_handler(event, context):
         'statusCode': 200,
         'body': json.dumps('CSV converted to JSON and available at: {bucket}/{key}'.format(bucket=bucket_name,key=keyname_s3))
     }
+
+
